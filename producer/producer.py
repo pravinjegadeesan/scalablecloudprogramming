@@ -2,54 +2,45 @@ import json
 import time
 from datetime import datetime
 
-from producer.music_downloader import download_chart
+from music_downloader import download_chart
 
 
-def create_event(row):
+def create_event(track):
 
     event = {
+        "timestamp": datetime.utcnow().isoformat(),
 
-        "timestamp":
-            datetime.utcnow().isoformat(),
+        "track": track["name"],
 
-        "rank":
-            int(row["rank"]),
+        "artist": track["artist"]["name"],
 
-        "track":
-            row["track_name"],
+        "listeners": int(track["listeners"]),
 
-        "artist":
-            row["artist_names"],
-
-        "streams":
-            int(row["streams"])
-
+        "playcount": int(track["playcount"])
     }
 
     return event
 
 
-
 def start_producer():
 
-    chart = download_chart()
+    print("Fetching music chart...")
 
+    tracks = download_chart()
 
-    for _, row in chart.iterrows():
+    print(f"Fetched {len(tracks)} tracks\n")
 
-        event = create_event(row)
+    for track in tracks:
 
+        event = create_event(track)
 
-        print(
-            json.dumps(event, indent=2)
-        )
+        print(json.dumps(event, indent=4))
 
+        print("-" * 50)
 
-        # simulate streaming delay
+        # simulate real-time streaming
         time.sleep(1)
 
 
-
 if __name__ == "__main__":
-
     start_producer()

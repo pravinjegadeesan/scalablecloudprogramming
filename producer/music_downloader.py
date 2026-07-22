@@ -3,7 +3,7 @@ import requests
 # Replace with your own Last.fm API Key
 API_KEY = "84432e4771b28a548b9339d648276a6a"
 
-BASE_URL = "https://ws.audioscrobbler.com/2.0/"
+BASE_URL = "https://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&api_key=84432e4771b28a548b9339d648276a6a&format=json"
 
 
 def download_chart(limit=10):
