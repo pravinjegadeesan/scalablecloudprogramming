@@ -2,7 +2,7 @@ import json
 import time
 from datetime import datetime
 
-from spotify_downloader import download_chart
+from producer.music_downloader import download_chart
 
 
 def create_event(row):
