@@ -3,7 +3,7 @@ import time
 from datetime import datetime
 
 from music_downloader import download_chart
-
+from kinesis_producer import send_event
 
 def create_event(track):
 
@@ -41,6 +41,6 @@ def start_producer():
         # simulate real-time streaming
         time.sleep(1)
 
-
+        send_event(event)
 if __name__ == "__main__":
     start_producer()
