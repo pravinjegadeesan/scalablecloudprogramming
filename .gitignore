@@ -6,8 +6,13 @@ __pycache__/
 # Virtual environments
 venv/
 env/
+
 ENV/
 .venv/
+
+# Datasets (Kaggle / large files)
+
+datasets/
 
 # Environment variables
 .env
