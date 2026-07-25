@@ -1,7 +1,11 @@
 import json
 import base64
 from datetime import datetime
+import boto3
 
+dynamodb = boto3.resource("dynamodb")
+
+table = dynamodb.Table("music-events")
 
 def lambda_handler(event, context):
 
