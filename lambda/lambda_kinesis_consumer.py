@@ -1,46 +1,69 @@
 import json
 import base64
-from datetime import datetime
 import boto3
+import uuid
+from datetime import datetime
 
+# DynamoDB
 dynamodb = boto3.resource("dynamodb")
-
 table = dynamodb.Table("music-events")
+
+# S3
+s3 = boto3.client("s3")
+
+BUCKET_NAME = "music-charts-data-lake"
+
 
 def lambda_handler(event, context):
 
     print("Received Kinesis records")
 
-
     for record in event["Records"]:
 
-        # Decode Kinesis data
+        # Decode Kinesis record
         payload = base64.b64decode(
             record["kinesis"]["data"]
         ).decode("utf-8")
 
-
         music_event = json.loads(payload)
 
-
-        print("Music Event:")
-        print(json.dumps(
-            music_event,
-            indent=4
-        ))
-
+        # Add unique ID
+        music_event["event_id"] = str(uuid.uuid4())
 
         # Add processing timestamp
-        music_event["processed_at"] = datetime.utcnow().isoformat()
-
-
-        print(
-            "Processed Event:",
-            music_event
+        music_event["processed_at"] = (
+            datetime.utcnow().isoformat()
         )
 
+        # Store in DynamoDB
+        table.put_item(
+            Item=music_event
+        )
+
+        print("Stored in DynamoDB")
+
+        # Create S3 path
+        now = datetime.utcnow()
+
+        file_key = (
+            f"music-events/"
+            f"{now.year}/"
+            f"{now.month:02d}/"
+            f"{now.day:02d}/"
+            f"{music_event['event_id']}.json"
+        )
+
+        # Store raw event in S3
+        s3.put_object(
+            Bucket=BUCKET_NAME,
+            Key=file_key,
+            Body=json.dumps(music_event, indent=4),
+            ContentType="application/json"
+        )
+
+        print(f"Stored in S3: {file_key}")
 
     return {
         "statusCode": 200,
-        "body": "Records processed successfully"
+        "body": "Stored successfully in DynamoDB and S3"
     }
