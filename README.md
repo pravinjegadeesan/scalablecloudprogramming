@@ -1,4 +1,4 @@
-# Spotify Charts Real-Time Analytics
+# Music Charts Real-Time Analytics
 
 ## Project Description
 
