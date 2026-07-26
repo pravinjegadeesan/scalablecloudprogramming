@@ -7,7 +7,6 @@
 let autoRefreshTimer = null;
 let simulationTickTimer = null;
 
-<<<<<<< HEAD
 // Node Description Map for interactive diagram
 const DIAGRAM_NODES = {
     historical: {
@@ -65,20 +64,13 @@ const DIAGRAM_NODES = {
         status: "URL: http://127.0.0.1:8000 | Port: 8000"
     }
 };
-=======
-
->>>>>>> 2d1c9d362b145b2b8c362c0df33f6e14839c8451
 
 /**
  * Initialization on DOM Load
  */
 document.addEventListener("DOMContentLoaded", async () => {
-<<<<<<< HEAD
     // 1. Initialize clock
     startClock();
-=======
-
->>>>>>> 2d1c9d362b145b2b8c362c0df33f6e14839c8451
 
     // 2. Initialize Chart.js objects
     if (window.initCharts) {
@@ -123,9 +115,6 @@ function startClock() {
         clockEl.textContent = new Date().toLocaleTimeString();
     }, 1000);
 }
-=======
-
->>>>>>> 2d1c9d362b145b2b8c362c0df33f6e14839c8451
 
 /**
  * Configure UI Handlers
@@ -178,9 +167,6 @@ function setupControls() {
 <<<<<<< HEAD
     // Default node details display
     showNodeDetails("fastapi");
-=======
-
->>>>>>> 2d1c9d362b145b2b8c362c0df33f6e14839c8451
 }
 
 /**
@@ -584,7 +570,6 @@ function formatWithCommas(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-<<<<<<< HEAD
 /**
  * Diagram Node Info Display Details
  */
@@ -630,8 +615,6 @@ function closeDetailsOverlay() {
     });
 }
 
-=======
->>>>>>> 2d1c9d362b145b2b8c362c0df33f6e14839c8451
 // XSS Sanitizer helper
 function escapeHtml(str) {
     if (!str) return "";
@@ -642,10 +625,7 @@ function escapeHtml(str) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
-<<<<<<< HEAD
 
 // Export functions to window scope
 window.showNodeDetails = showNodeDetails;
 window.closeDetailsOverlay = closeDetailsOverlay;
-=======
->>>>>>> 2d1c9d362b145b2b8c362c0df33f6e14839c8451
