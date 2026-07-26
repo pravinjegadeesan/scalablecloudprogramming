@@ -7,70 +7,13 @@
 let autoRefreshTimer = null;
 let simulationTickTimer = null;
 
-// Node Description Map for interactive diagram
-const DIAGRAM_NODES = {
-    historical: {
-        title: "Historical Last.fm Dataset",
-        type: "Local CSV Source Ingestion",
-        desc: "Raw historical music listening logs from the Last.fm dataset (containing hundreds of thousands of plays). Represents the base dataset used for long-term PySpark aggregations in the Batch Layer.",
-        status: "Size: 340 KB | Format: CSV"
-    },
-    s3: {
-        title: "Amazon S3 Data Lake",
-        type: "AWS Object Storage Service",
-        desc: "Central repository of our Lambda architecture. Stores historical inputs in `s3://music-charts-data-lake/batch-data/` and partitions streaming files under `music-events/YYYY/MM/DD/` for durable cold storage.",
-        status: "Bucket: music-charts-data-lake"
-    },
-    emr: {
-        title: "Amazon EMR Cluster",
-        type: "Managed PySpark / Hadoop Compute",
-        desc: "Executes distributed Spark SQL analytics. Periodically reads the S3 data lake, calculates top lists (`Artist`, `Track`, `Album`) aggregated by listen counts, and overwrites output directories.",
-        status: "Framework: Spark 3.3 | Status: Idle"
-    },
-    "batch-res": {
-        title: "S3 Batch Results",
-        type: "EMR Output Storage",
-        desc: "Serving directory in S3 holding processed batch metrics in CSV format (e.g. `results/top-artists/`). The FastAPI serving API queries these CSV partitions to display historical top charts.",
-        status: "Location: s3://music-charts-data-lake/results/"
-    },
-    stream: {
-        title: "Last.fm Dataset Replay",
-        type: "Python Continuous Stream Producer",
-        desc: "Simulates live web streams by downloading Last.fm charts and replaying events at 1-second intervals, pushing JSON objects to AWS Kinesis streams.",
-        status: "Rate: 1 event/sec | Format: JSON"
-    },
-    kinesis: {
-        title: "AWS Kinesis Data Stream",
-        type: "High-Throughput Ingestion Queue",
-        desc: "Speeds up raw ingestion and decouples producer streams from serverless execution. Buffers real-time logs before triggering downstream compute, preventing database writes bottlenecks.",
-        status: "Shards: 2 | Throughput: Up to 2MB/s"
-    },
-    lambda: {
-        title: "AWS Lambda Consumer",
-        type: "Event-Driven Serverless Compute",
-        desc: "Triggered instantly by Kinesis records. Decodes base64 event payloads, stamps unique UUIDs, records a `processed_at` timestamp, inserts entries into DynamoDB, and archives files to Amazon S3.",
-        status: "Trigger: kinesis-trigger | Concurrency: 10"
-    },
-    dynamodb: {
-        title: "Amazon DynamoDB Table",
-        type: "NoSQL Speed Layer Database",
-        desc: "Drives real-time serving endpoints. Stores recent music events in the `music-events` table and maintains sliding play counters in `music-trending-window` to compute trending charts.",
-        status: "Tables: music-events, music-trending-window"
-    },
-    fastapi: {
-        title: "FastAPI Serving Layer",
-        type: "High Performance Python REST Framework",
-        desc: "Exposes standardized JSON APIs. Merges historical S3 Spark aggregates with real-time DynamoDB speed outputs. The dashboard interacts solely with this layer.",
-        status: "URL: http://127.0.0.1:8000 | Port: 8000"
-    }
-};
+
 
 /**
  * Initialization on DOM Load
  */
 document.addEventListener("DOMContentLoaded", async () => {
-    // 1. Initialize clock
-    startClock();
+
 
     // 2. Initialize Chart.js objects
     if (window.initCharts) {
@@ -105,15 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setupAutoRefresh();
 });
 
-/**
- * Continuous Clock Display
- */
-function startClock() {
-    const clockEl = document.getElementById("clockDisplay");
-    setInterval(() => {
-        clockEl.textContent = new Date().toLocaleTimeString();
-    }, 1000);
-}
+
 
 /**
  * Configure UI Handlers
@@ -163,8 +98,7 @@ function setupControls() {
         refreshDashboard();
     });
 
-    // Default node details display
-    showNodeDetails("fastapi");
+
 }
 
 /**
@@ -568,51 +502,6 @@ function formatWithCommas(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-/**
- * Diagram Node Info Display Details
- */
-function showNodeDetails(nodeKey) {
-    const details = DIAGRAM_NODES[nodeKey];
-    if (!details) return;
-
-    const overlay = document.getElementById("nodeDetailsOverlay");
-    if (!overlay) return;
-
-    const titleEl = document.getElementById("detailsNodeTitle");
-    const typeEl = document.getElementById("detailsNodeType");
-    const descEl = document.getElementById("detailsNodeDesc");
-    const statusEl = document.getElementById("detailsNodeStatus");
-
-    if (titleEl) titleEl.textContent = details.title;
-    if (typeEl) typeEl.textContent = details.type;
-    if (descEl) descEl.textContent = details.desc;
-    if (statusEl) statusEl.textContent = details.status;
-
-    overlay.style.display = "block";
-    
-    // Highlight active selected node border
-    document.querySelectorAll(".diagram-node").forEach(n => {
-        n.style.borderColor = "var(--border-card)";
-        n.style.boxShadow = "none";
-    });
-    
-    const nodeEl = document.getElementById(`node-${nodeKey}`);
-    if (nodeEl) {
-        nodeEl.style.borderColor = "var(--accent)";
-        nodeEl.style.boxShadow = "0 0 15px rgba(59, 130, 246, 0.4)";
-    }
-}
-
-function closeDetailsOverlay() {
-    const overlay = document.getElementById("nodeDetailsOverlay");
-    if (overlay) overlay.style.display = "none";
-    
-    document.querySelectorAll(".diagram-node").forEach(n => {
-        n.style.borderColor = "var(--border-card)";
-        n.style.boxShadow = "none";
-    });
-}
-
 // XSS Sanitizer helper
 function escapeHtml(str) {
     if (!str) return "";
@@ -623,7 +512,3 @@ function escapeHtml(str) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
-
-// Export functions to window scope
-window.showNodeDetails = showNodeDetails;
-window.closeDetailsOverlay = closeDetailsOverlay;
