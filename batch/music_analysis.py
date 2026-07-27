@@ -1,6 +1,10 @@
+import time
+
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import count, desc
 
+
+start_time = time.time()
 
 # -------------------------------
 # Create Spark Session
@@ -152,5 +156,9 @@ top_albums.write \
 
 print("========== Batch Analytics Completed ==========")
 
+end_time = time.time()
+execution_time = end_time - start_time
+
+print("Spark Execution Time:", round(execution_time, 2), "seconds")
 
 spark.stop()

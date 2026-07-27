@@ -1,5 +1,6 @@
 import json
 import base64
+import time
 import boto3
 import uuid
 from datetime import datetime
@@ -43,13 +44,27 @@ def lambda_handler(event, context):
             print("Skipping non-object payload")
             continue
 
+        # =====================================
+        # Measure Streaming Latency
+        # =====================================
+        received_time = time.time()
+        sent_time = music_event.get("sent_time")
+
+        if sent_time is not None:
+            latency_seconds = received_time - float(sent_time)
+            latency_ms = round(latency_seconds * 1000, 2)
+            print(f"Latency: {latency_ms} ms")
+        else:
+            latency_ms = None
+            print("No sent_time found in event")
+
         # Add unique ID
         music_event["event_id"] = str(uuid.uuid4())
 
         # Add processing timestamp
-        music_event["processed_at"] = (
-            datetime.utcnow().isoformat()
-        )
+        processed_time = datetime.utcnow().isoformat()
+        music_event["processed_at"] = processed_time
+        music_event["latency_ms"] = latency_ms
 
         # Store in DynamoDB
         table.put_item(

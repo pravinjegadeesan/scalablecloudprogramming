@@ -1,5 +1,7 @@
-import boto3
 import json
+import time
+
+import boto3
 
 
 STREAM_NAME = "music-stream"
@@ -15,6 +17,8 @@ kinesis_client = boto3.client(
 
 def send_event(event):
 
+    event["sent_time"] = time.time()
+
     response = kinesis_client.put_record(
         StreamName=STREAM_NAME,
         Data=json.dumps(event),
@@ -22,8 +26,8 @@ def send_event(event):
     )
 
     print(
-        "Event sent to Kinesis:",
-        response["SequenceNumber"]
+        "Event sent:",
+        event["sent_time"]
     )
 
     return response

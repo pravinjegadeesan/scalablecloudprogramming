@@ -158,15 +158,12 @@ def trending_now():
         import datetime
         current_time = datetime.datetime.utcnow()
         window_start = current_time - datetime.timedelta(minutes=5)
-        
         current_time_str = current_time.isoformat()
         window_start_str = window_start.isoformat()
-        
-        # Scan DynamoDB table and filter for events within the 5-minute window
-        response = trend_table.scan(
-            FilterExpression="(#ua BETWEEN :wstart AND :cend) OR (#ts BETWEEN :wstart AND :cend)",
+
+        response = events_table.scan(
+            FilterExpression="(#ts BETWEEN :wstart AND :cend)",
             ExpressionAttributeNames={
-                "#ua": "updated_at",
                 "#ts": "timestamp"
             },
             ExpressionAttributeValues={
@@ -175,27 +172,44 @@ def trending_now():
             }
         )
 
-        items = response.get(
-            "Items",
-            []
-        )
+        items = response.get("Items", [])
+        filtered_items = []
 
-        # Sort items by play count descending
-        items.sort(
-            key=lambda x:
-            int(
-                x.get(
-                    "play_count",
-                    0
-                )
-            ),
-            reverse=True
-        )
+        for item in items:
+            item_ts = item.get("timestamp")
+            if not item_ts:
+                continue
+            try:
+                parsed_ts = datetime.datetime.fromisoformat(item_ts.replace("Z", "+00:00"))
+                if window_start <= parsed_ts <= current_time:
+                    filtered_items.append(item)
+            except ValueError:
+                continue
 
-        return items[:5]
+        aggregate = {}
+
+        for item in filtered_items:
+            track = item.get("track", "Unknown")
+            artist = item.get("artist", "Unknown")
+            playcount = int(item.get("playcount", 0) or 0)
+            key = (artist, track)
+            aggregate[key] = aggregate.get(key, 0) + playcount
+
+        results = [
+            {
+                "artist": artist,
+                "track": track,
+                "play_count": play_total,
+                "window": "5_minutes",
+                "updated_at": current_time_str
+            }
+            for (artist, track), play_total in aggregate.items()
+        ]
+
+        results.sort(key=lambda x: x["play_count"], reverse=True)
+        return results[:5]
 
     except Exception as e:
-
         return {
             "error": str(e)
         }
