@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 4. Try connecting to live FastAPI server
     const isLiveConnected = await API.checkApiHealth();
     const modeToggle = document.getElementById("modeToggle");
-    
+
     if (isLiveConnected) {
         console.log("Found live FastAPI API! Switching to LIVE mode.");
         // Disable demo mode toggle by default if API is running
@@ -126,7 +126,7 @@ function setupControls() {
         const simMode = e.target.checked;
         setSimulationMode(simMode);
         updateModeBadge(simMode);
-        
+
         if (simMode) {
             startSimulationTick();
         } else {
@@ -142,7 +142,7 @@ function setupControls() {
                 }
             });
         }
-        
+
         refreshDashboard();
     });
 
@@ -174,7 +174,7 @@ function setupControls() {
  */
 function setupAutoRefresh() {
     const isAuto = document.getElementById("autoRefreshToggle").checked;
-    
+
     if (autoRefreshTimer) {
         clearInterval(autoRefreshTimer);
         autoRefreshTimer = null;
@@ -192,7 +192,7 @@ function setupAutoRefresh() {
  */
 function startSimulationTick() {
     if (simulationTickTimer) return;
-    
+
     simulationTickTimer = setInterval(() => {
         if (!window.isSimulationMode) {
             stopSimulationTick();
@@ -253,7 +253,7 @@ async function refreshDashboard() {
         ];
 
         await Promise.all(promises);
-        
+
         // Update infrastructural panel last-checked times
         updateCheckedTimestamps();
         setInfraStatusHealthy("fastapi");
@@ -291,7 +291,7 @@ async function loadTrending() {
         if (window.updateTrendingChart) {
             window.updateTrendingChart(trending);
         }
-        
+
         // Update trending KPI card count
         const trendCount = trending.length;
         animateNumber("kpi-trending", trendCount);
@@ -351,7 +351,7 @@ async function updateKPIs() {
     if (window.isSimulationMode) {
         animateNumber("kpi-events", status.eventsProcessed);
         document.getElementById("streamLatencyVal").textContent = status.latency + " ms";
-        
+
         // Scale gauge
         if (window.updateGaugeChart) {
             window.updateGaugeChart(status.activeWorkers, status.maxWorkers);
@@ -368,7 +368,7 @@ async function updateKPIs() {
             const events = await API.getLatestEvents();
             // Simple mock count scaling since DynamoDB scan limit is 20
             animateNumber("kpi-events", 1530240 + events.length);
-            
+
             // Render default gauge values for live
             if (window.updateGaugeChart) {
                 window.updateGaugeChart(4, 10);
@@ -384,7 +384,7 @@ async function updateKPIs() {
  */
 function renderEventsTable(events) {
     const tbody = document.getElementById("eventsTableBody");
-    
+
     if (!events || events.length === 0) {
         renderEventsTableEmpty();
         return;
@@ -398,7 +398,7 @@ function renderEventsTable(events) {
             try {
                 const dateObj = new Date(ev.timestamp);
                 formattedTime = dateObj.toLocaleTimeString();
-            } catch (err) {}
+            } catch (err) { }
         }
 
         // Map Event Type class
@@ -454,12 +454,12 @@ function updateModeBadge(sim) {
     const badge = document.getElementById("modeBadge");
     const headerTitle = document.getElementById("mainHeaderTitle");
     const regionText = document.querySelector(".bg-dark strong");
-    
+
     if (sim) {
         badge.textContent = "Simulating";
         badge.className = "mode-badge simulated";
         headerTitle.innerHTML = "Music Charts Real-Time Analytics <span class='fs-6 text-success fw-normal border border-success-glow px-2 py-0.5 rounded'>Demo Mode</span>";
-        
+
         // Show healthy colors for mock AWS infra
         setInfraStatusHealthy("s3");
         setInfraStatusHealthy("kinesis");
@@ -471,7 +471,7 @@ function updateModeBadge(sim) {
         badge.textContent = "Live AWS Stack";
         badge.className = "mode-badge live";
         headerTitle.innerHTML = "Music Charts Real-Time Analytics <span class='fs-6 text-warning fw-normal border border-warning-glow px-2 py-0.5 rounded'>Live AWS Stack</span>";
-        
+
         // Set offline until checked
         setInfraStatusDegraded("s3");
         setInfraStatusDegraded("kinesis");
@@ -499,7 +499,7 @@ function setInfraStatusHealthy(id) {
         badge.className = "status-pill healthy";
         badge.innerHTML = `<span class="status-dot"></span>Healthy`;
     }
-    
+
     // Update matching KPI statuses
     if (id === "kinesis") {
         const kpi = document.getElementById("kpi-kinesis");

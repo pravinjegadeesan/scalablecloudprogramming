@@ -96,7 +96,7 @@ class MockDataProvider {
         this.scalingTrigger = "CPU > 75% or Stream Ingestion > 3000 events/sec";
         this.cooldownPeriod = 300; // seconds
         this.currentLatency = 8.5; // ms
-        
+
         // Generate initial recent events list
         this.recentEvents = [];
         for (let i = 0; i < 20; i++) {
@@ -330,7 +330,7 @@ const API = {
 window.API_URL = API_URL;
 window.API = API;
 window.isSimulationMode = isSimulationMode;
-window.setSimulationMode = function(val) {
+window.setSimulationMode = function (val) {
     isSimulationMode = val;
     window.isSimulationMode = val;
 };

@@ -7,23 +7,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
 
 :root {
-    --bg-main: #0f172a;        /* slate-900 */
-    --bg-card: #1e293b;        /* slate-800 */
+    --bg-main: #0f172a;
+    /* slate-900 */
+    --bg-card: #1e293b;
+    /* slate-800 */
     --border-card: rgba(255, 255, 255, 0.06);
-    --accent: #3b82f6;         /* blue-500 */
+    --accent: #3b82f6;
+    /* blue-500 */
     --accent-glow: rgba(59, 130, 246, 0.15);
-    
-    --success: #22c55e;        /* green-500 */
+
+    --success: #22c55e;
+    /* green-500 */
     --success-glow: rgba(34, 197, 94, 0.15);
-    
-    --warning: #f59e0b;        /* yellow-500 */
+
+    --warning: #f59e0b;
+    /* yellow-500 */
     --warning-glow: rgba(245, 158, 11, 0.15);
-    
-    --danger: #ef4444;         /* red-500 */
+
+    --danger: #ef4444;
+    /* red-500 */
     --danger-glow: rgba(239, 68, 68, 0.15);
 
-    --purple: #a855f7;         /* batch layer indicator */
-    --cyan: #06b6d4;           /* speed layer indicator */
+    --purple: #a855f7;
+    /* batch layer indicator */
+    --cyan: #06b6d4;
+    /* speed layer indicator */
 
     --font-heading: 'Outfit', sans-serif;
     --font-body: 'Inter', sans-serif;
@@ -39,7 +47,12 @@ body {
     overflow-x: hidden;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: var(--font-heading);
     color: #f1f5f9;
 }
@@ -146,9 +159,17 @@ h1, h2, h3, h4, h5, h6 {
     gap: 0.25rem;
 }
 
-.trend-up { color: var(--success); }
-.trend-down { color: var(--danger); }
-.trend-neutral { color: #64748b; }
+.trend-up {
+    color: var(--success);
+}
+
+.trend-down {
+    color: var(--danger);
+}
+
+.trend-neutral {
+    color: #64748b;
+}
 
 /* --------------------------------
  * Lambda Architecture Diagram
@@ -275,19 +296,52 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Specific Node Placements */
 /* Batch Track (Top) */
-#node-historical { top: 30px; left: 5%; }
-#node-s3 { top: 30px; left: 24%; }
-#node-emr { top: 30px; left: 43%; }
-#node-batch-res { top: 30px; left: 62%; }
+#node-historical {
+    top: 30px;
+    left: 5%;
+}
+
+#node-s3 {
+    top: 30px;
+    left: 24%;
+}
+
+#node-emr {
+    top: 30px;
+    left: 43%;
+}
+
+#node-batch-res {
+    top: 30px;
+    left: 62%;
+}
 
 /* Speed Track (Bottom) */
-#node-stream { top: 220px; left: 5%; }
-#node-kinesis { top: 220px; left: 24%; }
-#node-lambda { top: 220px; left: 43%; }
-#node-dynamodb { top: 220px; left: 62%; }
+#node-stream {
+    top: 220px;
+    left: 5%;
+}
+
+#node-kinesis {
+    top: 220px;
+    left: 24%;
+}
+
+#node-lambda {
+    top: 220px;
+    left: 43%;
+}
+
+#node-dynamodb {
+    top: 220px;
+    left: 62%;
+}
 
 /* Convergence point (Right) */
-#node-fastapi { top: 125px; left: 81%; }
+#node-fastapi {
+    top: 125px;
+    left: 81%;
+}
 
 /* Tracks Labels */
 .track-label {
@@ -329,13 +383,20 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0.75rem;
     z-index: 3;
     display: none;
-    box-shadow: 0 10px 15px rgba(0,0,0,0.4);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.4);
     animation: fadeIn 0.2s ease-out;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* --------------------------------
@@ -411,11 +472,30 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 4px;
 }
 
-.badge-play { background-color: var(--success-glow); color: var(--success); }
-.badge-skip { background-color: var(--danger-glow); color: var(--danger); }
-.badge-like { background-color: var(--accent-glow); color: var(--accent); }
-.badge-playlist { background-color: rgba(168, 85, 247, 0.15); color: var(--purple); }
-.badge-purchase { background-color: var(--warning-glow); color: var(--warning); }
+.badge-play {
+    background-color: var(--success-glow);
+    color: var(--success);
+}
+
+.badge-skip {
+    background-color: var(--danger-glow);
+    color: var(--danger);
+}
+
+.badge-like {
+    background-color: var(--accent-glow);
+    color: var(--accent);
+}
+
+.badge-playlist {
+    background-color: rgba(168, 85, 247, 0.15);
+    color: var(--purple);
+}
+
+.badge-purchase {
+    background-color: var(--warning-glow);
+    color: var(--warning);
+}
 
 /* --------------------------------
  * Infrastructure Grid
@@ -425,12 +505,29 @@ h1, h2, h3, h4, h5, h6 {
     border-left: 4px solid var(--accent);
 }
 
-.infra-card.s3 { border-left-color: var(--purple); }
-.infra-card.kinesis { border-left-color: var(--cyan); }
-.infra-card.lambda { border-left-color: var(--warning); }
-.infra-card.dynamodb { border-left-color: var(--success); }
-.infra-card.emr { border-left-color: var(--purple); }
-.infra-card.fastapi { border-left-color: var(--accent); }
+.infra-card.s3 {
+    border-left-color: var(--purple);
+}
+
+.infra-card.kinesis {
+    border-left-color: var(--cyan);
+}
+
+.infra-card.lambda {
+    border-left-color: var(--warning);
+}
+
+.infra-card.dynamodb {
+    border-left-color: var(--success);
+}
+
+.infra-card.emr {
+    border-left-color: var(--purple);
+}
+
+.infra-card.fastapi {
+    border-left-color: var(--accent);
+}
 
 /* Status Indicators */
 .status-pill {
@@ -482,9 +579,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes pulse {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
 }
 
 /* --------------------------------
@@ -524,7 +632,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Empty States */
@@ -627,11 +737,12 @@ h1, h2, h3, h4, h5, h6 {
         overflow-x: auto;
         padding: 1rem 0;
     }
-    
+
     .lambda-connections {
-        display: none; /* Hide svg connections on smaller wrapped displays */
+        display: none;
+        /* Hide svg connections on smaller wrapped displays */
     }
-    
+
     .diagram-node {
         position: relative !important;
         top: auto !important;
@@ -643,11 +754,11 @@ h1, h2, h3, h4, h5, h6 {
         text-align: left;
         gap: 1rem;
     }
-    
+
     .diagram-node-title {
         margin: 0;
     }
-    
+
     .track-label {
         position: relative;
         top: auto !important;

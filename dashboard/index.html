@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music Charts Real-Time Analytics - Lambda Architecture Dashboard</title>
-    
+
     <!-- Meta Descriptions for SEO -->
-    <meta name="description" content="MSc Cloud Computing Lambda Architecture Dashboard - Real-Time Music Analytics using AWS Kinesis, Lambda, EMR, S3, and FastAPI.">
-    <meta name="keywords" content="MSc project, Cloud Computing, Lambda Architecture, AWS, Spark, Kinesis, Real-time Analytics">
-    
+    <meta name="description"
+        content="MSc Cloud Computing Lambda Architecture Dashboard - Real-Time Music Analytics using AWS Kinesis, Lambda, EMR, S3, and FastAPI.">
+    <meta name="keywords"
+        content="MSc project, Cloud Computing, Lambda Architecture, AWS, Spark, Kinesis, Real-time Analytics">
+
     <!-- CDNs: Bootstrap 5, Chart.js, Google Fonts -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <!-- 1. Header Section -->
@@ -22,19 +26,23 @@
                 <h1 class="dashboard-title text-white" id="mainHeaderTitle">Music Charts Real-Time Analytics</h1>
                 <div class="dashboard-subtitle">Lambda Architecture MSc Project Demonstration</div>
             </div>
-            
+
             <div class="col-xl-6 col-md-7 col-12">
                 <div class="d-flex flex-wrap align-items-center justify-content-md-end gap-3">
-                    
+
                     <!-- Simulation/Live Toggle -->
-                    <div class="form-check form-switch bg-dark-custom p-2 rounded border border-secondary d-flex align-items-center gap-2 m-0" style="background-color: rgba(255,255,255,0.03);">
-                        <label class="form-check-label text-secondary small fw-bold" for="modeToggle" style="margin-left: 2rem; cursor: pointer;">DEMO MODE</label>
-                        <input class="form-check-input" type="checkbox" role="switch" id="modeToggle" checked style="cursor: pointer;">
+                    <div class="form-check form-switch bg-dark-custom p-2 rounded border border-secondary d-flex align-items-center gap-2 m-0"
+                        style="background-color: rgba(255,255,255,0.03);">
+                        <label class="form-check-label text-secondary small fw-bold" for="modeToggle"
+                            style="margin-left: 2rem; cursor: pointer;">DEMO MODE</label>
+                        <input class="form-check-input" type="checkbox" role="switch" id="modeToggle" checked
+                            style="cursor: pointer;">
                         <span id="modeBadge" class="mode-badge simulated">Simulating</span>
                     </div>
 
                     <!-- AWS Region Badge -->
-                    <div class="bg-dark border border-secondary px-3 py-2 rounded text-secondary small d-none d-lg-block" style="background-color: rgba(0,0,0,0.3) !important;">
+                    <div class="bg-dark border border-secondary px-3 py-2 rounded text-secondary small d-none d-lg-block"
+                        style="background-color: rgba(0,0,0,0.3) !important;">
                         <span class="text-white-50">AWS Region:</span> <strong class="text-info">us-east-1</strong>
                     </div>
 
@@ -45,14 +53,18 @@
 
                     <!-- Auto Refresh Toggle -->
                     <div class="form-check form-switch d-flex align-items-center gap-1 m-0">
-                        <input class="form-check-input" type="checkbox" id="autoRefreshToggle" checked style="cursor: pointer;">
-                        <label class="form-check-label text-secondary small fw-bold" for="autoRefreshToggle" style="cursor: pointer;">AUTO (5s)</label>
+                        <input class="form-check-input" type="checkbox" id="autoRefreshToggle" checked
+                            style="cursor: pointer;">
+                        <label class="form-check-label text-secondary small fw-bold" for="autoRefreshToggle"
+                            style="cursor: pointer;">AUTO (5s)</label>
                     </div>
 
                     <!-- Manual Refresh Button -->
-                    <button class="btn btn-custom-refresh d-flex align-items-center gap-1" id="manualRefreshBtn" title="Refresh Dashboard">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                    <button class="btn btn-custom-refresh d-flex align-items-center gap-1" id="manualRefreshBtn"
+                        title="Refresh Dashboard">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
                         </svg>
                         Refresh
                     </button>
@@ -62,27 +74,32 @@
     </header>
 
     <div class="container-fluid px-4">
-        
+
         <!-- 2. KPI Cards Grid -->
         <section class="row g-3 mb-4">
-            
+
             <!-- KPI 1: Events Processed -->
-            <div class="col-xxl-3 col-md-6 col-12">
+            <div class="col-xxl col-md-4 col-sm-6 col-12">
                 <div class="custom-card kpi-card">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div class="custom-card-title">Total Events Processed</div>
                             <div class="kpi-val text-white" id="kpi-events">1,530,240</div>
                             <div class="kpi-trend trend-up">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18M17 6h6v6"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18M17 6h6v6" />
                                 </svg>
                                 +142 events/s (Avg)
                             </div>
                         </div>
-                        <div class="kpi-icon-wrapper bg-primary-glow" style="background-color: rgba(59, 130, 246, 0.15); color: #3b82f6;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                        <div class="kpi-icon-wrapper bg-primary-glow"
+                            style="background-color: rgba(59, 130, 246, 0.15); color: #3b82f6;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
                             </svg>
                         </div>
                     </div>
@@ -90,22 +107,28 @@
             </div>
 
             <!-- KPI 2: Trending Songs Count -->
-            <div class="col-xxl-3 col-md-6 col-12">
+            <div class="col-xxl col-md-4 col-sm-6 col-12">
                 <div class="custom-card kpi-card">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div class="custom-card-title">Active Trending Songs</div>
                             <div class="kpi-val text-warning" id="kpi-trending">5</div>
                             <div class="kpi-trend trend-up">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18M17 6h6v6"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18M17 6h6v6" />
                                 </svg>
                                 In 5 min window
                             </div>
                         </div>
-                        <div class="kpi-icon-wrapper" style="background-color: rgba(245, 158, 11, 0.15); color: #f59e0b;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        <div class="kpi-icon-wrapper"
+                            style="background-color: rgba(245, 158, 11, 0.15); color: #f59e0b;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                <polygon
+                                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                             </svg>
                         </div>
                     </div>
@@ -113,7 +136,7 @@
             </div>
 
             <!-- KPI 3: Unique Artists -->
-            <div class="col-xxl-3 col-md-6 col-12">
+            <div class="col-xxl col-md-4 col-sm-6 col-12">
                 <div class="custom-card kpi-card">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
@@ -121,9 +144,13 @@
                             <div class="kpi-val text-white" id="kpi-artists">2,842</div>
                             <div class="kpi-trend trend-neutral">EMR S3 Batch Dataset</div>
                         </div>
-                        <div class="kpi-icon-wrapper" style="background-color: rgba(168, 85, 247, 0.15); color: #a855f7;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm14 14v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                        <div class="kpi-icon-wrapper"
+                            style="background-color: rgba(168, 85, 247, 0.15); color: #a855f7;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm14 14v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
                             </svg>
                         </div>
                     </div>
@@ -131,7 +158,7 @@
             </div>
 
             <!-- KPI 4: Unique Tracks -->
-            <div class="col-xxl-3 col-md-6 col-12">
+            <div class="col-xxl col-md-4 col-sm-6 col-12">
                 <div class="custom-card kpi-card">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
@@ -139,18 +166,21 @@
                             <div class="kpi-val text-white" id="kpi-tracks">18,504</div>
                             <div class="kpi-trend trend-neutral">EMR S3 Batch Dataset</div>
                         </div>
-                        <div class="kpi-icon-wrapper" style="background-color: rgba(6, 182, 212, 0.15); color: #06b6d4;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M9 18V5l12-2v13M9 9h12M9 13H5a2 2 0 1 0 0 4h4v-4zm12-2h-4a2 2 0 1 0 0 4h4v-4z"/>
+                        <div class="kpi-icon-wrapper"
+                            style="background-color: rgba(6, 182, 212, 0.15); color: #06b6d4;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M9 18V5l12-2v13M9 9h12M9 13H5a2 2 0 1 0 0 4h4v-4zm12-2h-4a2 2 0 1 0 0 4h4v-4z" />
                             </svg>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Row 2 KPIs -->
-            <!-- KPI 5: EMR Spark Jobs Completed -->
-            <div class="col-xxl-3 col-md-6 col-12">
+            <!-- KPI 5: EMR Batch Jobs Run -->
+            <div class="col-xxl col-md-4 col-sm-6 col-12">
                 <div class="custom-card kpi-card">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
@@ -160,66 +190,15 @@
                                 Last run: 45 min ago
                             </div>
                         </div>
-                        <div class="kpi-icon-wrapper" style="background-color: rgba(168, 85, 247, 0.15); color: #a855f7;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
-                                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
-                                <line x1="6" y1="6" x2="6.01" y2="6"/>
-                                <line x1="6" y1="18" x2="6.01" y2="18"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- KPI 6: Kinesis Stream Status -->
-            <div class="col-xxl-3 col-md-6 col-12">
-                <div class="custom-card kpi-card">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="custom-card-title">Kinesis Ingestion</div>
-                            <div class="kpi-val text-success" id="kpi-kinesis">ACTIVE</div>
-                            <div class="kpi-trend text-secondary">2 Shards, 0% Throttling</div>
-                        </div>
-                        <div class="kpi-icon-wrapper" style="background-color: rgba(6, 182, 212, 0.15); color: #06b6d4;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M5 12h14M12 5l7 7-7 7M2 17l5-5-5-5"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- KPI 7: Lambda Consumer Status -->
-            <div class="col-xxl-3 col-md-6 col-12">
-                <div class="custom-card kpi-card">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="custom-card-title">Lambda Processing</div>
-                            <div class="kpi-val text-success" id="kpi-lambda">HEALTHY</div>
-                            <div class="kpi-trend text-secondary">Concurrency: 10/1000</div>
-                        </div>
-                        <div class="kpi-icon-wrapper" style="background-color: rgba(245, 158, 11, 0.15); color: #f59e0b;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M6 20l4-7 5-11M10 13l6 7"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- KPI 8: API Status -->
-            <div class="col-xxl-3 col-md-6 col-12">
-                <div class="custom-card kpi-card">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="custom-card-title">Serving API Status</div>
-                            <div class="kpi-val" id="kpi-api" style="color: #3b82f6;">CONNECTED</div>
-                            <div class="kpi-trend text-secondary" id="kpi-api-desc">Uvicorn FastAPI</div>
-                        </div>
-                        <div class="kpi-icon-wrapper" style="background-color: rgba(59, 130, 246, 0.15); color: #3b82f6;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        <div class="kpi-icon-wrapper"
+                            style="background-color: rgba(168, 85, 247, 0.15); color: #a855f7;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="8" rx="2" ry="2" />
+                                <rect x="2" y="14" width="20" height="8" rx="2" ry="2" />
+                                <line x1="6" y1="6" x2="6.01" y2="6" />
+                                <line x1="6" y1="18" x2="6.01" y2="18" />
                             </svg>
                         </div>
                     </div>
@@ -367,11 +346,11 @@
 
         <!-- 4. Speed Layer & Real-Time Section -->
         <section class="row g-4 mb-4">
-            
+
             <!-- Real-Time streaming Table (Columns: Timestamp, Artist, Track, Album, Country, Event Type) -->
             <div class="col-xl-8 col-12">
                 <div class="custom-card position-relative" style="min-height: 400px;">
-                    
+
                     <!-- Loading overlay for table -->
                     <div class="dashboard-loader-overlay" id="eventsLoader">
                         <div class="spinner-custom"></div>
@@ -379,7 +358,8 @@
 
                     <div class="custom-card-header">
                         <h2 class="custom-card-title text-success">
-                            <span class="status-dot bg-success" style="width: 8px; height: 8px; box-shadow: 0 0 8px var(--success);"></span>
+                            <span class="status-dot bg-success"
+                                style="width: 8px; height: 8px; box-shadow: 0 0 8px var(--success);"></span>
                             Real-Time Speed Layer - Latest Streaming Events
                         </h2>
                         <span class="text-secondary small">Auto-polling DynamoDB (music-events)</span>
@@ -417,14 +397,17 @@
                     <div>
                         <div class="custom-card-header">
                             <h2 class="custom-card-title text-warning">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                                 </svg>
                                 Top 5 Trending Now
                             </h2>
                             <span class="text-secondary small">GET /trending-now</span>
                         </div>
-                        
+
                         <!-- Chart container -->
                         <div style="position: relative; height: 180px; width: 100%;">
                             <canvas id="trendingChart"></canvas>
@@ -436,7 +419,8 @@
                         <div class="row text-center">
                             <div class="col-6 border-end border-secondary">
                                 <div class="text-secondary small fw-bold mb-1">Sliding Window</div>
-                                <span class="badge bg-warning text-dark px-3 py-1 font-monospace small">LAST 5 MINUTES</span>
+                                <span class="badge bg-warning text-dark px-3 py-1 font-monospace small">LAST 5
+                                    MINUTES</span>
                             </div>
                             <div class="col-6">
                                 <div class="text-secondary small fw-bold mb-1">Stream Latency</div>
@@ -451,14 +435,16 @@
 
         <!-- 5. Batch Layer Section -->
         <section class="row g-4 mb-4">
-            
+
             <!-- Top Artists -->
             <div class="col-xl-4 col-md-6 col-12">
                 <div class="custom-card" style="min-height: 380px;">
                     <div class="custom-card-header">
                         <h2 class="custom-card-title text-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
                             </svg>
                             Batch Layer: Top Artists
                         </h2>
@@ -475,8 +461,11 @@
                 <div class="custom-card" style="min-height: 380px;">
                     <div class="custom-card-header">
                         <h2 class="custom-card-title text-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M9 18V5l12-2v13M9 9h12M9 13H5a2 2 0 1 0 0 4h4v-4zm12-2h-4a2 2 0 1 0 0 4h4v-4z"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M9 18V5l12-2v13M9 9h12M9 13H5a2 2 0 1 0 0 4h4v-4zm12-2h-4a2 2 0 1 0 0 4h4v-4z" />
                             </svg>
                             Batch Layer: Top Tracks
                         </h2>
@@ -493,8 +482,11 @@
                 <div class="custom-card" style="min-height: 380px;">
                     <div class="custom-card-header">
                         <h2 class="custom-card-title text-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"/><path d="M12 2a7 7 0 1 0 10 10"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 2a7 7 0 1 0 10 10" />
                             </svg>
                             Batch Layer: Top Albums
                         </h2>
@@ -510,14 +502,18 @@
 
         <!-- 6. Performance & Scaling Section -->
         <section class="row g-4 mb-4">
-            
+
             <!-- Real-Time Metrics (Throughput and Latency line charts) -->
             <div class="col-xl-8 col-12">
                 <div class="custom-card">
                     <div class="custom-card-header">
                         <h2 class="custom-card-title">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <line x1="18" y1="20" x2="18" y2="10" />
+                                <line x1="12" y1="20" x2="12" y2="4" />
+                                <line x1="6" y1="20" x2="6" y2="14" />
                             </svg>
                             Real-Time Processing Performance Metrics
                         </h2>
@@ -527,14 +523,16 @@
                     <div class="row">
                         <!-- Throughput Chart -->
                         <div class="col-md-6 col-12 mb-3 mb-md-0">
-                            <h5 class="text-secondary small fw-bold text-center mb-2">STREAMING INGESTION THROUGHPUT (EVENTS/SEC)</h5>
+                            <h5 class="text-secondary small fw-bold text-center mb-2">STREAMING INGESTION THROUGHPUT
+                                (EVENTS/SEC)</h5>
                             <div style="position: relative; height: 180px; width: 100%;">
                                 <canvas id="throughputChart"></canvas>
                             </div>
                         </div>
                         <!-- Latency Chart -->
                         <div class="col-md-6 col-12">
-                            <h5 class="text-secondary small fw-bold text-center mb-2">END-TO-END PROCESSING LATENCY (MS)</h5>
+                            <h5 class="text-secondary small fw-bold text-center mb-2">END-TO-END PROCESSING LATENCY (MS)
+                            </h5>
                             <div style="position: relative; height: 180px; width: 100%;">
                                 <canvas id="latencyChart"></canvas>
                             </div>
@@ -549,8 +547,10 @@
                     <div>
                         <div class="custom-card-header">
                             <h2 class="custom-card-title text-info">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                                 </svg>
                                 EMR Auto Scaling Visualization
                             </h2>
@@ -564,7 +564,8 @@
                             </div>
                             <div class="gauge-center-text">
                                 <div class="small text-secondary fw-semibold">WORKERS</div>
-                                <div id="gaugeValue"><span class="fw-bold fs-2 text-white">4</span> <span class="text-secondary">/ 10</span></div>
+                                <div id="gaugeValue"><span class="fw-bold fs-2 text-white">4</span> <span
+                                        class="text-secondary">/ 10</span></div>
                             </div>
                         </div>
                     </div>
@@ -579,7 +580,8 @@
                                 </tr>
                                 <tr>
                                     <td>Current Scaling Trigger:</td>
-                                    <td class="text-end text-info" id="scale-trigger" style="font-size: 0.7rem;">CPU &gt; 75% or Stream &gt; 3000/s</td>
+                                    <td class="text-end text-info" id="scale-trigger" style="font-size: 0.7rem;">CPU
+                                        &gt; 75% or Stream &gt; 3000/s</td>
                                 </tr>
                                 <tr>
                                     <td>Scaling Cooldown Period:</td>
@@ -595,25 +597,32 @@
 
         <!-- 7. Performance Benchmark Dashboard -->
         <section class="row g-4 mb-5">
-            
+
             <!-- Benchmarks comparisons (Sequential vs Parallel, Ingestion Rate, Speedup, Workers) -->
             <div class="col-12">
                 <div class="custom-card">
                     <div class="custom-card-header">
                         <h2 class="custom-card-title text-info">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                                <polyline points="2 17 12 22 22 17" />
+                                <polyline points="2 12 12 17 22 12" />
                             </svg>
                             Lambda Architecture Performance Benchmarks
                         </h2>
-                        <span class="text-secondary small">Comparison: Batch & Parallel Spark vs Single-threaded Ingest</span>
+                        <span class="text-secondary small">Comparison: Batch & Parallel Spark vs Single-threaded
+                            Ingest</span>
                     </div>
 
                     <div class="row g-3">
                         <!-- Benchmark 1: Execution Time Seq vs Parallel -->
                         <div class="col-md-6 col-12">
-                            <div class="bg-dark p-2 rounded border border-secondary" style="background-color: rgba(0,0,0,0.15) !important;">
-                                <h5 class="text-secondary small fw-bold mb-2">SEQUENTIAL VS PARALLEL EXECUTION (SEC)</h5>
+                            <div class="bg-dark p-2 rounded border border-secondary"
+                                style="background-color: rgba(0,0,0,0.15) !important;">
+                                <h5 class="text-secondary small fw-bold mb-2">SEQUENTIAL VS PARALLEL EXECUTION (SEC)
+                                </h5>
                                 <div style="position: relative; height: 160px; width: 100%;">
                                     <canvas id="sequentialVsParallelChart"></canvas>
                                 </div>
@@ -622,7 +631,8 @@
 
                         <!-- Benchmark 2: Ingestion Latency vs Rate -->
                         <div class="col-md-6 col-12">
-                            <div class="bg-dark p-2 rounded border border-secondary" style="background-color: rgba(0,0,0,0.15) !important;">
+                            <div class="bg-dark p-2 rounded border border-secondary"
+                                style="background-color: rgba(0,0,0,0.15) !important;">
                                 <h5 class="text-secondary small fw-bold mb-2">END-TO-END LATENCY VS INGESTION RATE</h5>
                                 <div style="position: relative; height: 160px; width: 100%;">
                                     <canvas id="latencyVsIngestionChart"></canvas>
@@ -632,8 +642,10 @@
 
                         <!-- Benchmark 3: Speedup Factor vs Workers count -->
                         <div class="col-md-6 col-12">
-                            <div class="bg-dark p-2 rounded border border-secondary" style="background-color: rgba(0,0,0,0.15) !important;">
-                                <h5 class="text-secondary small fw-bold mb-2">SPARK CLUSTER SPEEDUP & EXECUTION TIME</h5>
+                            <div class="bg-dark p-2 rounded border border-secondary"
+                                style="background-color: rgba(0,0,0,0.15) !important;">
+                                <h5 class="text-secondary small fw-bold mb-2">SPARK CLUSTER SPEEDUP & EXECUTION TIME
+                                </h5>
                                 <div style="position: relative; height: 160px; width: 100%;">
                                     <canvas id="speedupChart"></canvas>
                                 </div>
@@ -642,7 +654,8 @@
 
                         <!-- Benchmark 4: Throughput vs Ingestion Rate over time -->
                         <div class="col-md-6 col-12">
-                            <div class="bg-dark p-2 rounded border border-secondary" style="background-color: rgba(0,0,0,0.15) !important;">
+                            <div class="bg-dark p-2 rounded border border-secondary"
+                                style="background-color: rgba(0,0,0,0.15) !important;">
                                 <h5 class="text-secondary small fw-bold mb-2">SPARK INGESTION THROUGHPUT OVER TIME</h5>
                                 <div style="position: relative; height: 160px; width: 100%;">
                                     <canvas id="throughputVsTimeChart"></canvas>
@@ -702,4 +715,5 @@
     <script src="app.js"></script>
 
 </body>
+
 </html>

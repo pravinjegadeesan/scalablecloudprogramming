@@ -507,7 +507,7 @@ function initGaugeChart() {
  */
 function updateTrendingChart(items) {
     if (!trendingChart) return;
-    
+
     // Sort and grab top 5
     const labels = items.map(item => `${item.track} (${item.artist})`);
     const values = items.map(item => item.play_count);
@@ -528,7 +528,7 @@ function updateTrendingChart(items) {
  */
 function updateTopArtistsChart(records) {
     if (!topArtistsChart) return;
-    
+
     // Take top 10
     const sorted = records.slice(0, 10);
     topArtistsChart.data.labels = sorted.map(r => r.Artist);
@@ -541,7 +541,7 @@ function updateTopArtistsChart(records) {
  */
 function updateTopTracksChart(records) {
     if (!topTracksChart) return;
-    
+
     // Take top 10
     const sorted = records.slice(0, 10);
     topTracksChart.data.labels = sorted.map(r => {
@@ -561,7 +561,7 @@ function updateTopTracksChart(records) {
  */
 function updateTopAlbumsChart(records) {
     if (!topAlbumsChart) return;
-    
+
     const sorted = records.slice(0, 7); // Show top 7 for readability in doughnut
     topAlbumsChart.data.labels = sorted.map(r => {
         let a = r.Album;
@@ -579,7 +579,7 @@ function updateTopAlbumsChart(records) {
  */
 function updatePerformanceCharts(history) {
     if (!throughputChart || !latencyChart) return;
-    
+
     throughputChart.data.labels = history.timestamps;
     throughputChart.data.datasets[0].data = history.throughput;
     throughputChart.update("none"); // skip animation for continuous stream update performance
@@ -594,9 +594,9 @@ function updatePerformanceCharts(history) {
  */
 function updateGaugeChart(current, max) {
     if (!workerGaugeChart) return;
-    
+
     const capacity = Math.max(0, max - current);
-    
+
     // Dynamic color depending on workers load
     let workerColor = THEME_COLORS.success;
     if (current >= max * 0.8) {
