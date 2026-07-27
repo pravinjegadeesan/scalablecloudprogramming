@@ -7,6 +7,7 @@
 Chart.defaults.color = "#94a3b8"; // slate-400
 Chart.defaults.borderColor = "rgba(148, 163, 184, 0.1)"; // slate-400 with opacity
 Chart.defaults.font.family = "'Inter', 'Outfit', 'Roboto', 'Segoe UI', sans-serif";
+Chart.defaults.animation = false;
 
 // Chart Instances
 let trendingChart = null;

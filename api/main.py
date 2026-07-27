@@ -2,12 +2,23 @@ from fastapi import FastAPI
 import boto3
 import pandas as pd
 import io
+import json
 from botocore.exceptions import ClientError
 
 
 app = FastAPI(
     title="Music Charts Analytics API",
     version="1.0"
+)
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -26,6 +37,10 @@ s3 = boto3.client(
     region_name="us-east-1"
 )
 
+kinesis = boto3.client(
+    "kinesis",
+    region_name="us-east-1"
+)
 
 
 # --------------------------------
@@ -66,24 +81,63 @@ def home():
 
 # --------------------------------
 # Latest Real-Time Events
-# DynamoDB Speed Layer
+# AWS Kinesis Stream Direct Ingest
 # --------------------------------
 
 @app.get("/latest-events")
 def latest_events():
 
     try:
+        import datetime
+        now = datetime.datetime.now(datetime.timezone.utc)
+        start_time = now - datetime.timedelta(minutes=5)
 
-        response = events_table.scan(
-            Limit=20
-        )
-
-
-        return response.get(
-            "Items",
-            []
-        )
-
+        response = kinesis.describe_stream(StreamName="music-stream")
+        shards = response['StreamDescription']['Shards']
+        
+        events = []
+        for shard in shards:
+            shard_id = shard['ShardId']
+            try:
+                # 1. Try AT_TIMESTAMP from 5 minutes ago
+                iterator_response = kinesis.get_shard_iterator(
+                    StreamName="music-stream",
+                    ShardId=shard_id,
+                    ShardIteratorType='AT_TIMESTAMP',
+                    Timestamp=start_time
+                )
+                shard_iterator = iterator_response['ShardIterator']
+                records_response = kinesis.get_records(
+                    ShardIterator=shard_iterator,
+                    Limit=20
+                )
+                records = records_response.get('Records', [])
+                
+                # 2. Fallback to TRIM_HORIZON if no recent records are found
+                if not records:
+                    iterator_response = kinesis.get_shard_iterator(
+                        StreamName="music-stream",
+                        ShardId=shard_id,
+                        ShardIteratorType='TRIM_HORIZON'
+                    )
+                    shard_iterator = iterator_response['ShardIterator']
+                    records_response = kinesis.get_records(
+                        ShardIterator=shard_iterator,
+                        Limit=20
+                    )
+                    records = records_response.get('Records', [])
+                    
+                for record in records:
+                    try:
+                        data = json.loads(record['Data'].decode('utf-8'))
+                        events.append(data)
+                    except Exception:
+                        pass
+            except Exception:
+                pass
+                    
+        events.sort(key=lambda x: x.get('timestamp', ''), reverse=True)
+        return events[:20]
 
     except Exception as e:
 
@@ -100,18 +154,33 @@ def latest_events():
 
 @app.get("/trending-now")
 def trending_now():
-
     try:
-
-        response = trend_table.scan()
-
+        import datetime
+        current_time = datetime.datetime.utcnow()
+        window_start = current_time - datetime.timedelta(minutes=5)
+        
+        current_time_str = current_time.isoformat()
+        window_start_str = window_start.isoformat()
+        
+        # Scan DynamoDB table and filter for events within the 5-minute window
+        response = trend_table.scan(
+            FilterExpression="(#ua BETWEEN :wstart AND :cend) OR (#ts BETWEEN :wstart AND :cend)",
+            ExpressionAttributeNames={
+                "#ua": "updated_at",
+                "#ts": "timestamp"
+            },
+            ExpressionAttributeValues={
+                ":wstart": window_start_str,
+                ":cend": current_time_str
+            }
+        )
 
         items = response.get(
             "Items",
             []
         )
 
-
+        # Sort items by play count descending
         items.sort(
             key=lambda x:
             int(
@@ -123,9 +192,7 @@ def trending_now():
             reverse=True
         )
 
-
         return items[:5]
-
 
     except Exception as e:
 
@@ -196,13 +263,10 @@ def read_spark_result(folder):
 
 
         df = pd.read_csv(
-
             io.BytesIO(
-
                 obj["Body"].read()
-
-            )
-
+            ),
+            on_bad_lines='skip'
         )
 
 

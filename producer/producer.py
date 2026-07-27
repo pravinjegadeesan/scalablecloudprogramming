@@ -23,24 +23,22 @@ def create_event(track):
 
 
 def start_producer():
-
-    print("Fetching music chart...")
-
-    tracks = download_chart()
-
-    print(f"Fetched {len(tracks)} tracks\n")
-
-    for track in tracks:
-
-        event = create_event(track)
-
-        print(json.dumps(event, indent=4))
-
-        print("-" * 50)
-
-        # simulate real-time streaming
-        time.sleep(1)
-
-        send_event(event)
+    while True:
+        try:
+            print("Fetching music chart...")
+            tracks = download_chart()
+            print(f"Fetched {len(tracks)} tracks\n")
+            if not tracks:
+                time.sleep(10)
+                continue
+            for track in tracks:
+                event = create_event(track)
+                print(json.dumps(event, indent=4))
+                print("-" * 50)
+                send_event(event)
+                time.sleep(2)
+        except Exception as e:
+            print(f"Producer error: {e}")
+            time.sleep(5)
 if __name__ == "__main__":
     start_producer()

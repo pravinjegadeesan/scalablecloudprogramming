@@ -7,7 +7,7 @@
 const API_URL = "http://127.0.0.1:8001";
 
 // Simulation/Demo Mode state
-let isSimulationMode = true;
+let isSimulationMode = false;
 
 // Cache of historical metrics for charts
 const metricsHistory = {
