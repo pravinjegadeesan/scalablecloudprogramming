@@ -5,6 +5,7 @@
 
 // Configure FastAPI server location here
 const API_URL = "http://127.0.0.1:8001";
+const IRELAND_TIMEZONE = "Europe/Dublin";
 
 // Simulation/Demo Mode state
 let isSimulationMode = false;
@@ -106,7 +107,7 @@ class MockDataProvider {
         // Generate initial metrics history
         const now = new Date();
         for (let i = 9; i >= 0; i--) {
-            const timeStr = new Date(now.getTime() - i * 5000).toLocaleTimeString();
+            const timeStr = new Date(now.getTime() - i * 5000).toLocaleTimeString("en-IE", { timeZone: IRELAND_TIMEZONE });
             metricsHistory.timestamps.push(timeStr);
             metricsHistory.throughput.push(Math.round(2000 + Math.random() * 800));
             metricsHistory.latency.push(parseFloat((6 + Math.random() * 4).toFixed(1)));
@@ -154,7 +155,7 @@ class MockDataProvider {
         }
 
         // Add new metrics history entry
-        const timeStr = new Date().toLocaleTimeString();
+        const timeStr = new Date().toLocaleTimeString("en-IE", { timeZone: IRELAND_TIMEZONE });
         metricsHistory.timestamps.push(timeStr);
         metricsHistory.throughput.push(currentIngestion);
         this.currentLatency = parseFloat((5 + Math.random() * 4 + (this.activeWorkers > 6 ? -2 : 2)).toFixed(1));

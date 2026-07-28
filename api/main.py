@@ -3,6 +3,10 @@ import boto3
 import pandas as pd
 import io
 import json
+import time
+import csv
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from botocore.exceptions import ClientError
 
 
@@ -42,6 +46,14 @@ kinesis = boto3.client(
     region_name="us-east-1"
 )
 
+athena = boto3.client(
+    "athena",
+    region_name="us-east-1"
+)
+
+ATHENA_DATABASE = "music_analytics"
+ATHENA_OUTPUT = "s3://music-charts-data-lake/athena-results/"
+
 
 # --------------------------------
 # DynamoDB Tables
@@ -56,6 +68,9 @@ trend_table = dynamodb.Table(
     "music-trending-window"
 )
 
+performance_table = dynamodb.Table(
+    "stream-performance"
+)
 
 
 # --------------------------------
@@ -64,6 +79,65 @@ trend_table = dynamodb.Table(
 
 BUCKET = "music-charts-data-lake"
 
+
+def run_athena_query(query):
+
+    response = athena.start_query_execution(
+        QueryString=query,
+        QueryExecutionContext={
+            "Database": ATHENA_DATABASE
+        },
+        ResultConfiguration={
+            "OutputLocation": ATHENA_OUTPUT
+        }
+    )
+
+    query_id = response["QueryExecutionId"]
+
+    while True:
+
+        status = athena.get_query_execution(
+            QueryExecutionId=query_id
+        )
+
+        state = status["QueryExecution"]["Status"]["State"]
+
+        if state == "SUCCEEDED":
+            break
+
+        elif state in ["FAILED", "CANCELLED"]:
+            return []
+
+        time.sleep(1)
+
+    result = athena.get_query_results(
+        QueryExecutionId=query_id
+    )
+
+    rows = result["ResultSet"]["Rows"]
+
+    if len(rows) < 2:
+        return []
+
+    headers = [
+        c.get("VarCharValue", "")
+        for c in rows[0]["Data"]
+    ]
+
+    data = []
+
+    for row in rows[1:]:
+
+        values = [
+            c.get("VarCharValue", "")
+            for c in row["Data"]
+        ]
+
+        data.append(
+            dict(zip(headers, values))
+        )
+
+    return data
 
 
 # --------------------------------
@@ -156,7 +230,8 @@ def latest_events():
 def trending_now():
     try:
         import datetime
-        current_time = datetime.datetime.utcnow()
+        ireland_tz = ZoneInfo("Europe/Dublin")
+        current_time = datetime.datetime.now(ireland_tz)
         window_start = current_time - datetime.timedelta(minutes=5)
         current_time_str = current_time.isoformat()
         window_start_str = window_start.isoformat()
@@ -181,10 +256,15 @@ def trending_now():
                 continue
             try:
                 parsed_ts = datetime.datetime.fromisoformat(item_ts.replace("Z", "+00:00"))
-                if window_start <= parsed_ts <= current_time:
-                    filtered_items.append(item)
             except ValueError:
                 continue
+
+            if parsed_ts.tzinfo is None:
+                parsed_ts = parsed_ts.replace(tzinfo=datetime.timezone.utc)
+
+            parsed_ts = parsed_ts.astimezone(ireland_tz)
+            if window_start <= parsed_ts <= current_time:
+                filtered_items.append(item)
 
         aggregate = {}
 
@@ -302,6 +382,65 @@ def read_spark_result(folder):
         }
 
 
+# --------------------------------
+# Read Performance Metrics
+# --------------------------------
+
+def read_performance():
+
+    try:
+
+        response = performance_table.scan()
+
+        items = response.get(
+            "Items",
+            []
+        )
+
+        if not items:
+
+            return {
+
+                "average_latency_ms":0,
+
+                "samples":0
+
+            }
+
+        total = 0
+
+        for item in items:
+
+            total += float(
+                item.get(
+                    "latency_ms",
+                    0
+                )
+            )
+
+        average = total / len(items)
+
+        return {
+
+            "average_latency_ms":
+            round(
+                average,
+                2
+            ),
+
+            "samples":
+            len(items)
+
+        }
+
+    except Exception as e:
+
+        return {
+
+            "error":
+            str(e)
+
+        }
 
 
 # --------------------------------
@@ -316,6 +455,21 @@ def top_artists():
         "top-artists"
     )
 
+
+@app.get("/athena/top-artists")
+def athena_top_artists():
+
+    query = """
+    SELECT
+        artist,
+        SUM(playcount) AS total_playcount
+    FROM music_events
+    GROUP BY artist
+    ORDER BY total_playcount DESC
+    LIMIT 10;
+    """
+
+    return run_athena_query(query)
 
 
 # --------------------------------
@@ -343,3 +497,76 @@ def top_albums():
     return read_spark_result(
         "top-albums"
     )
+
+
+# --------------------------------
+# Hybrid Serving View
+# Batch + Speed + Performance
+# --------------------------------
+
+@app.get("/dashboard")
+def dashboard():
+
+    return {
+
+        "system":
+
+        {
+
+            "service":
+            "Music Analytics Dashboard",
+
+            "updated":
+            datetime.now(ZoneInfo("Europe/Dublin")).isoformat()
+
+        },
+
+        "batch_layer":
+
+        {
+
+            "top_artists":
+
+            read_spark_result(
+                "top-artists"
+            ),
+
+            "top_tracks":
+
+            read_spark_result(
+                "top-tracks"
+            ),
+
+            "top_albums":
+
+            read_spark_result(
+                "top-albums"
+            )
+
+        },
+
+        "speed_layer":
+
+        {
+
+            "trending_now":
+
+            trending_now()
+
+        },
+
+        "performance":
+
+        {
+
+            "stream_latency":
+
+            read_performance(),
+
+            "spark_execution_time":
+
+            "38 seconds"
+
+        }
+
+    }

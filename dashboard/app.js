@@ -1,5 +1,6 @@
 let autoRefreshTimer = null;
 let telemetryTimer = null;
+const STREAM_REFRESH_MS = 5000;
 
 document.addEventListener("DOMContentLoaded", () => {
     if (window.initCharts) {
@@ -35,7 +36,7 @@ function startAutoRefresh() {
     // Poll the serving layer API every 5 seconds
     autoRefreshTimer = setInterval(() => {
         refreshDashboard();
-    }, 5000);
+    }, STREAM_REFRESH_MS);
 }
 
 function startTelemetryLoop() {
@@ -83,6 +84,7 @@ async function refreshDashboard() {
             runTask("top albums", loadTopAlbums)
         ];
         await Promise.all(promises);
+        updateThroughputBenchmark();
         
         if (hasAwsError) {
             showAwsAlert("AWS Connection Error: Your temporary AWS credentials/token has expired or is invalid. Please check your credentials file or environment variables.");
@@ -145,11 +147,26 @@ async function loadTrending() {
 }
 
 async function loadTopArtists() {
-    const artists = await API.getTopArtists();
+    let artists = [];
+
+    try {
+        const response = await fetch(`${API_URL}/athena/top-artists`);
+        if (!response.ok) throw new Error(`Athena fetch failed: ${response.status}`);
+        const data = await response.json();
+        if (Array.isArray(data) && data.length > 0) {
+            artists = data.map(item => ({
+                Artist: item.artist,
+                listen_count: Number(item.total_playcount || 0)
+            }));
+        }
+    } catch (err) {
+        console.warn("Athena top-artists unavailable; falling back to batch data.", err);
+        artists = await API.getTopArtists();
+    }
+
     if (window.updateTopArtistsChart) {
         window.updateTopArtistsChart(artists);
     }
-    // Update unique artists count KPI
     animateNumber("kpi-artists", artists.length);
 }
 
@@ -181,7 +198,8 @@ function renderEventsTable(events) {
         if (ev.timestamp) {
             try {
                 const dateObj = new Date(ev.timestamp);
-                formattedTime = dateObj.toLocaleTimeString();
+                const tz = window.IRELAND_TIMEZONE || "Europe/Dublin";
+                formattedTime = dateObj.toLocaleTimeString("en-IE", { timeZone: tz });
             } catch (err) {}
         }
         let typeClass = "badge-play";
@@ -230,12 +248,29 @@ function toggleLoader(show) {
 }
 
 function updateCheckedTimestamps() {
-    const timeStr = new Date().toLocaleTimeString();
+    const tz = window.IRELAND_TIMEZONE || "Europe/Dublin";
+    const timeStr = new Date().toLocaleTimeString("en-IE", { timeZone: tz });
     const list = ["s3", "kinesis", "lambda", "dynamodb", "emr", "api"];
     list.forEach(id => {
         const el = document.getElementById(`${id}-update`);
         if (el) el.textContent = `Last Checked: ${timeStr}`;
     });
+}
+
+function updateThroughputBenchmark() {
+    const benchmarks = API.getStaticBenchmarks();
+    const throughputData = benchmarks.throughputOverTime.throughput || [];
+    if (!throughputData.length) return;
+
+    const peak = Math.max(...throughputData);
+    const avg = Math.round(throughputData.reduce((sum, value) => sum + value, 0) / throughputData.length);
+    const peakEl = document.getElementById("throughputBenchmarkPeak");
+    const avgEl = document.getElementById("throughputBenchmarkAvg");
+    const windowEl = document.getElementById("throughputBenchmarkWindow");
+
+    if (peakEl) peakEl.textContent = formatWithCommas(peak);
+    if (avgEl) avgEl.textContent = formatWithCommas(avg);
+    if (windowEl) windowEl.textContent = benchmarks.throughputOverTime.timeline.length;
 }
 
 function animateNumber(elementId, targetValue) {
