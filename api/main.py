@@ -231,39 +231,27 @@ def trending_now():
     try:
         import datetime
         ireland_tz = ZoneInfo("Europe/Dublin")
-        current_time = datetime.datetime.now(ireland_tz)
-        window_start = current_time - datetime.timedelta(minutes=5)
-        current_time_str = current_time.isoformat()
-        window_start_str = window_start.isoformat()
+        now_utc = datetime.datetime.now(datetime.timezone.utc)
+        window_start_utc = now_utc - datetime.timedelta(minutes=15)
+        current_time_str = datetime.datetime.now(ireland_tz).isoformat()
 
-        response = events_table.scan(
-            FilterExpression="(#ts BETWEEN :wstart AND :cend)",
-            ExpressionAttributeNames={
-                "#ts": "timestamp"
-            },
-            ExpressionAttributeValues={
-                ":wstart": window_start_str,
-                ":cend": current_time_str
-            }
-        )
-
+        response = events_table.scan()
         items = response.get("Items", [])
         filtered_items = []
 
         for item in items:
-            item_ts = item.get("timestamp")
+            item_ts = item.get("processed_at") or item.get("timestamp")
             if not item_ts:
                 continue
             try:
-                parsed_ts = datetime.datetime.fromisoformat(item_ts.replace("Z", "+00:00"))
+                parsed_ts = datetime.datetime.fromisoformat(str(item_ts).replace("Z", "+00:00"))
             except ValueError:
                 continue
 
             if parsed_ts.tzinfo is None:
                 parsed_ts = parsed_ts.replace(tzinfo=datetime.timezone.utc)
 
-            parsed_ts = parsed_ts.astimezone(ireland_tz)
-            if window_start <= parsed_ts <= current_time:
+            if window_start_utc <= parsed_ts <= now_utc:
                 filtered_items.append(item)
 
         aggregate = {}
@@ -280,7 +268,7 @@ def trending_now():
                 "artist": artist,
                 "track": track,
                 "play_count": play_total,
-                "window": "5_minutes",
+                "window": "15_minutes",
                 "updated_at": current_time_str
             }
             for (artist, track), play_total in aggregate.items()

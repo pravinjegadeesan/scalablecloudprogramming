@@ -213,7 +213,6 @@ function renderEventsTable(events) {
                 <td class="font-monospace text-info">${formattedTime}</td>
                 <td class="fw-bold">${escapeHtml(ev.artist)}</td>
                 <td class="text-white-50">${escapeHtml(ev.track)}</td>
-                <td class="text-secondary" style="font-size: 0.75rem;">${escapeHtml(ev.album || "-")}</td>
                 <td class="small text-secondary">${escapeHtml(ev.country || "Global")}</td>
                 <td><span class="badge-custom ${typeClass}">${typeStr}</span></td>
             </tr>
@@ -227,7 +226,7 @@ function renderEventsTableEmpty() {
     if (tbody) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" class="text-center py-5 text-secondary">
+                <td colspan="5" class="text-center py-5 text-secondary">
                     <div class="empty-state">
                         <div class="empty-state-icon">📭</div>
                         <h5 class="text-white">No Stream Events Found</h5>

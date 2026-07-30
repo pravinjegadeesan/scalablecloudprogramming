@@ -22,24 +22,8 @@
     <!-- 1. Header Section -->
     <header class="dashboard-header">
         <div class="row align-items-center">
-            <div class="col-xl-6 col-md-5 col-12 mb-3 mb-md-0">
+            <div class="col-12">
                 <h1 class="dashboard-title text-white" id="mainHeaderTitle">Music Charts Real-Time Analytics</h1>
-                <div class="dashboard-subtitle">Lambda Architecture MSc Project Demonstration</div>
-            </div>
-
-            <div class="col-xl-6 col-md-7 col-12">
-                <div class="d-flex flex-wrap align-items-center justify-content-md-end gap-3">
-
-                    <!-- Manual Refresh Button -->
-                    <button class="btn btn-custom-refresh d-flex align-items-center gap-1" id="manualRefreshBtn"
-                        title="Refresh Dashboard">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
-                        </svg>
-                        Refresh
-                    </button>
-                </div>
             </div>
         </div>
     </header>
@@ -47,15 +31,21 @@
     <div class="container-fluid px-4">
 
         <!-- Alert Banner for AWS Credentials Errors -->
-        <div id="awsAlertBanner" class="alert alert-danger d-none my-3" role="alert" style="background-color: rgba(220, 53, 69, 0.15); border-color: rgba(220, 53, 69, 0.4); color: #f87171;">
+        <div id="awsAlertBanner" class="alert alert-danger d-none my-3" role="alert"
+            style="background-color: rgba(220, 53, 69, 0.15); border-color: rgba(220, 53, 69, 0.4); color: #f87171;">
             <div class="d-flex align-items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0">
-                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                    <line x1="12" y1="9" x2="12" y2="13"/>
-                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="flex-shrink-0">
+                    <path
+                        d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
                 </svg>
                 <div>
-                    <strong>AWS Connection Error:</strong> <span id="awsAlertMessage">Your temporary AWS credentials/token has expired or is invalid. Please check your credentials file or environment.</span>
+                    <strong>AWS Connection Error:</strong> <span id="awsAlertMessage">Your temporary AWS
+                        credentials/token has expired or is invalid. Please check your credentials file or
+                        environment.</span>
                 </div>
             </div>
         </div>
@@ -111,7 +101,7 @@
                             style="background-color: rgba(245, 158, 11, 0.15); color: #f59e0b;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
+                                stroke-linejoin="round">
                                 <polygon
                                     points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                             </svg>
@@ -220,7 +210,6 @@
                                     <th>Timestamp</th>
                                     <th>Artist</th>
                                     <th>Track</th>
-                                    <th>Album</th>
                                     <th>Country</th>
                                     <th>Event Type</th>
                                 </tr>
@@ -253,21 +242,6 @@
                         <!-- Chart container -->
                         <div style="position: relative; height: 180px; width: 100%;">
                             <canvas id="trendingChart"></canvas>
-                        </div>
-                    </div>
-
-                    <!-- Metadata details -->
-                    <div class="border-top border-secondary pt-3 mt-2">
-                        <div class="row text-center">
-                            <div class="col-6 border-end border-secondary">
-                                <div class="text-secondary small fw-bold mb-1">Sliding Window</div>
-                                <span class="badge bg-warning text-dark px-3 py-1 font-monospace small">LAST 5
-                                    MINUTES</span>
-                            </div>
-                            <div class="col-6">
-                                <div class="text-secondary small fw-bold mb-1">Stream Latency</div>
-                                <span class="h5 fw-bold text-success font-monospace" id="streamLatencyVal">8.5 ms</span>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -368,7 +342,8 @@
                             <div class="bg-dark p-3 rounded border border-secondary">
                                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
                                     <h5 class="text-secondary small fw-bold mb-0">THROUGHPUT BENCHMARK</h5>
-                                    <span class="badge bg-primary-subtle text-primary px-2 py-1 small">Peak throughput snapshot</span>
+                                    <span class="badge bg-primary-subtle text-primary px-2 py-1 small">Peak throughput
+                                        snapshot</span>
                                 </div>
                                 <div class="row text-center g-3">
                                     <div class="col-md-4 col-12">
@@ -416,11 +391,6 @@
                     <div>
                         <div class="custom-card-header">
                             <h2 class="custom-card-title text-info">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                                </svg>
                                 EMR Auto Scaling Visualization
                             </h2>
                             <span class="text-secondary small">Spark Worker Load</span>

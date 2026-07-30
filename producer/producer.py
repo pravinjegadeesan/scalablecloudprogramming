@@ -1,6 +1,7 @@
 import json
 import time
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from music_downloader import download_chart
 from kinesis_producer import send_event
@@ -8,7 +9,7 @@ from kinesis_producer import send_event
 def create_event(track):
 
     event = {
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(ZoneInfo("Europe/Dublin")).isoformat(),
 
         "track": track["name"],
 
