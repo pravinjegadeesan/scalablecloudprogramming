@@ -18,14 +18,30 @@ def lambda_handler(event, context):
 
     print("Received Kinesis records")
 
-    for record in event["Records"]:
+    records = event.get("Records", [])
+    if not records:
+        return {
+            "statusCode": 400,
+            "body": "No Kinesis records were provided"
+        }
 
-        # Decode Kinesis record
-        payload = base64.b64decode(
-            record["kinesis"]["data"]
-        ).decode("utf-8")
+    for record in records:
 
-        music_event = json.loads(payload)
+        try:
+            # Decode Kinesis record
+            payload = base64.b64decode(
+                record["kinesis"]["data"]
+            ).decode("utf-8")
+
+            music_event = json.loads(payload)
+
+        except (KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:
+            print(f"Skipping invalid record: {exc}")
+            continue
+
+        if not isinstance(music_event, dict):
+            print("Skipping non-object payload")
+            continue
 
         # Add unique ID
         music_event["event_id"] = str(uuid.uuid4())
